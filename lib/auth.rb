@@ -17,8 +17,10 @@ module CheesyCommon
       User.new(JSON.parse(Crypto.decrypt(response.body)))
     end
 
-    def self.find_users_with_permission(permission, team: nil)
-      response = HTTParty.get("#{Config.members_url}/api/users?permission=#{permission}" + "&team=#{team}" if team)
+    def self.find_users_with_permission(permission, program: nil)
+      url = "#{Config.members_url}/api/users?permission=#{permission}"
+      url += "&program=#{program}" if program
+      response = HTTParty.get(url)
       return nil if response.code != 200
       JSON.parse(Crypto.decrypt(response.body)).map { |fields| User.new(fields) }
     end
